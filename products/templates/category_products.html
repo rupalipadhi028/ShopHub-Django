@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{{ category.name }} - Shop Hub</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold"
+           href="{% url 'home' %}">
+            🛍️ Shop Hub
+        </a>
+
+        <a class="btn btn-outline-light"
+           href="{% url 'cart' %}">
+            🛒 Cart
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container py-5">
+
+    <h1 class="text-center mb-5">
+        {{ category.name }}
+    </h1>
+
+    <div class="row g-4">
+
+        {% for product in products %}
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card h-100 shadow-sm">
+
+                {% if product.image %}
+
+                <img src="{{ product.image.url }}"
+                     class="card-img-top"
+                     style="height:250px; object-fit:cover;"
+                     alt="{{ product.name }}">
+
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ product.name }}
+                    </h5>
+
+                    <p class="card-text">
+                        {{ product.description|truncatewords:15 }}
+                    </p>
+
+                    <h5 class="text-primary">
+                        ₹{{ product.price }}
+                    </h5>
+
+                    <a href="{% url 'product_detail' product.id %}"
+                       class="btn btn-primary w-100">
+
+                        View Details
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-info text-center">
+
+                No products found in this category.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

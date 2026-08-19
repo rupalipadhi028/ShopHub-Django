@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Categories - Shop Hub</title>
+</head>
+
+<body>
+
+<h1>Shop by Category</h1>
+
+{% for category in categories %}
+
+    <div>
+        <h2>{{ category.name }}</h2>
+
+        <a href="{% url 'category_products' category.id %}">
+            Explore {{ category.name }}
+        </a>
+    </div>
+
+{% empty %}
+
+    <p>No categories available.</p>
+
+{% endfor %}
+
+</body>
+</html>

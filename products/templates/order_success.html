@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Order Successful - Shop Hub</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .success-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-card {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            padding: 50px 35px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+        }
+
+        .success-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+        }
+
+        .success-card h1 {
+            font-weight: 700;
+        }
+
+        .order-number {
+            background: #f1f5f9;
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .home-btn {
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container success-container">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            🎉
+        </div>
+
+        <h1>Order Placed Successfully!</h1>
+
+        <p class="text-muted mt-3">
+            Thank you for shopping with Shop Hub.
+            Your order has been successfully placed.
+        </p>
+
+        <div class="order-number">
+            Order #{{ order.id }}
+        </div>
+
+        <p>
+            We will process your order shortly.
+        </p>
+
+        <a href="{% url 'home' %}"
+           class="btn btn-primary home-btn mt-3">
+
+            🏠 Continue Shopping
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

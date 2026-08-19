@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart - Shop Hub</title>
+</head>
+
+<body>
+
+<h1>🛒 Your Shopping Cart</h1>
+
+{% if cart_items %}
+
+    {% for item in cart_items %}
+
+        <div>
+            <h2>{{ item.product.name }}</h2>
+
+            <p>Price: ₹{{ item.product.price }}</p>
+            <p>Price: ₹{{ item.product.price }}</p>
+
+<div>
+    <a href="{% url 'decrease_quantity' item.product.id %}">
+        ➖
+    </a>
+
+    <strong>{{ item.quantity }}</strong>
+
+    <a href="{% url 'increase_quantity' item.product.id %}">
+        ➕
+    </a>
+</div>
+
+<p>Subtotal: ₹{{ item.subtotal }}</p>
+
+<a href="{% url 'remove_from_cart' item.product.id %}">
+    🗑️ Remove
+</a>
+
+            
+            <p>Subtotal: ₹{{ item.subtotal }}</p>
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+    <h2>Total: ₹{{ total }}</h2>
+    <a href="{% url 'checkout' %}" class="btn btn-primary">
+    🛒 Proceed to Checkout
+</a>
+
+{% else %}
+
+    <h2>Your cart is empty.</h2>
+
+{% endif %}<br>
+
+<a href="/">Continue Shopping</a>
+
+</body>
+</html>
