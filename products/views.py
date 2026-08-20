@@ -1,7 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from urllib3 import request
 
 from .models import Category, Product, Order, OrderItem
 
@@ -31,17 +33,42 @@ def product_detail(request, product_id):
         'product': product
     })
 
-
 # Add product to cart
 def add_to_cart(request, product_id):
+
+    product = get_object_or_404(Product, id=product_id)
+
+    # Check whether product is available
+    if product.stock <= 0:
+        messages.error(
+            request,
+            f'{product.name} is currently out of stock.'
+        )
+        return redirect('product_detail', product_id=product.id)
+
     cart = request.session.get('cart', {})
 
-    if str(product_id) in cart:
-        cart[str(product_id)] += 1
-    else:
-        cart[str(product_id)] = 1
+    product_id = str(product_id)
+
+    # Current quantity in cart
+    current_quantity = cart.get(product_id, 0)
+
+    # Don't allow quantity greater than stock
+    if current_quantity >= product.stock:
+        messages.warning(
+            request,
+            f'Only {product.stock} units of {product.name} are available.'
+        )
+        return redirect('cart')
+
+    cart[product_id] = current_quantity + 1
 
     request.session['cart'] = cart
+
+    messages.success(
+        request,
+        f'{product.name} added to your cart.'
+    )
 
     return redirect('cart')
 
@@ -100,39 +127,68 @@ def checkout(request):
 
     if request.method == 'POST':
 
+        # Check stock before creating order
+        for item in cart_items:
+
+            product = item['product']
+            quantity = item['quantity']
+
+            if quantity > product.stock:
+
+                messages.error(
+                    request,
+                    f'Only {product.stock} units of {product.name} are available.'
+                )
+
+                return redirect('cart')
+
         customer_name = request.POST.get('customer_name')
         email = request.POST.get('email')
         address = request.POST.get('address')
         city = request.POST.get('city')
         pincode = request.POST.get('pincode')
 
+        # Create order
         order = Order.objects.create(
-        user=request.user if request.user.is_authenticated else None,
-        customer_name=customer_name,
-        email=email,
-        address=address,
-        city=city,
-        pincode=pincode,
-        total_amount=total
-    )
+            user=request.user if request.user.is_authenticated else None,
+            customer_name=customer_name,
+            email=email,
+            address=address,
+            city=city,
+            pincode=pincode,
+            total_amount=total
+        )
 
+        # Create order items and reduce stock
         for item in cart_items:
+
+            product = item['product']
+            quantity = item['quantity']
 
             OrderItem.objects.create(
                 order=order,
-                product=item['product'],
-                quantity=item['quantity'],
-                price=item['product'].price
+                product=product,
+                quantity=quantity,
+                price=product.price
             )
 
+            # Reduce stock
+            product.stock -= quantity
+            product.save()
+
+        # Clear cart
         request.session['cart'] = {}
 
-        return redirect('order_success', order_id=order.id)
+        return redirect(
+            'order_success',
+            order_id=order.id
+        )
 
     return render(request, 'checkout.html', {
         'cart_items': cart_items,
         'total': total
     })
+
 
 
 # Remove product from cart
@@ -151,12 +207,25 @@ def remove_from_cart(request, product_id):
 
 # Increase quantity
 def increase_quantity(request, product_id):
+
     cart = request.session.get('cart', {})
 
     product_id = str(product_id)
 
+    product = get_object_or_404(Product, id=product_id)
+
     if product_id in cart:
-        cart[product_id] += 1
+
+        current_quantity = cart[product_id]
+
+        if current_quantity < product.stock:
+            cart[product_id] += 1
+
+        else:
+            messages.warning(
+                request,
+                f'Only {product.stock} units of {product.name} are available.'
+            )
 
     request.session['cart'] = cart
 
@@ -340,4 +409,20 @@ def order_detail(request, order_id):
             'order': order
         }
     )
+@login_required
+def cancel_order(request, order_id):
+
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        user=request.user
+    )
+
+    if order.status in ['placed', 'processing']:
+
+        order.status = 'cancelled'
+        order.save()
+
+    return redirect('order_detail', order_id=order.id)
+
 # Create your views here.

@@ -12,9 +12,8 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-
 class Product(models.Model):
+
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE
@@ -39,18 +38,17 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    user = models.ForeignKey(
-    User,
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True
-)
+
+
 class Order(models.Model):
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=True,
-        blank=True)
+        blank=True
+    )
+
     customer_name = models.CharField(max_length=100)
     email = models.EmailField()
     address = models.TextField()
@@ -62,10 +60,23 @@ class Order(models.Model):
         decimal_places=2
     )
 
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('placed', 'Order Placed'),
+            ('processing', 'Processing'),
+            ('shipped', 'Shipped'),
+            ('delivered', 'Delivered'),
+            ('cancelled', 'Cancelled'),
+        ],
+        default='placed'
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name}"
+    
 
 
 class OrderItem(models.Model):

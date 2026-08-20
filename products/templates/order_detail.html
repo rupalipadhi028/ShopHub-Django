@@ -44,7 +44,103 @@
         .back-btn {
             border-radius: 50px;
         }
+    /* ORDER TRACKING */
 
+.tracking {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 30px 10px;
+}
+
+.tracking::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: 8%;
+    right: 8%;
+    height: 4px;
+    background: #e9ecef;
+    z-index: 0;
+}
+
+.tracking-step {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    width: 25%;
+}
+
+.tracking-icon {
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    border: 4px solid white;
+}
+
+.tracking-step.completed .tracking-icon {
+    background: #0d6efd;
+    color: white;
+}
+
+.tracking-text {
+    margin-top: 12px;
+}
+
+.tracking-text strong {
+    display: block;
+    font-size: 14px;
+}
+
+.tracking-text small {
+    display: block;
+    color: #777;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .tracking {
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .tracking::before {
+        top: 25px;
+        bottom: 25px;
+        left: 24px;
+        right: auto;
+        width: 4px;
+        height: auto;
+    }
+
+    .tracking-step {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        text-align: left;
+    }
+
+    .tracking-icon {
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .tracking-text {
+        margin-top: 0;
+        margin-left: 15px;
+    }
+}
     </style>
 
 </head>
@@ -69,14 +165,127 @@
 
             </div>
 
-            <span class="badge bg-success fs-6">
-                Order Placed
-            </span>
+            {% if order.status == 'placed' %}
 
+    <span class="badge bg-warning text-dark fs-6">
+        🟡 Order Placed
+    </span>
+
+{% elif order.status == 'processing' %}
+
+    <span class="badge bg-primary fs-6">
+        🔵 Processing
+    </span>
+
+{% elif order.status == 'shipped' %}
+
+    <span class="badge bg-info text-dark fs-6">
+        🚚 Shipped
+    </span>
+
+{% elif order.status == 'delivered' %}
+
+    <span class="badge bg-success fs-6">
+        ✅ Delivered
+    </span>
+
+{% elif order.status == 'cancelled' %}
+
+    <span class="badge bg-danger fs-6">
+        ❌ Cancelled
+    </span>
+
+{% endif %}
         </div>
 
         <hr>
+    <!-- ORDER TRACKING -->
 
+<h4 class="fw-bold mb-4">
+    📍 Order Tracking
+</h4>
+
+<div class="tracking">
+
+    <!-- PLACED -->
+    <div class="tracking-step
+        {% if order.status == 'placed' or order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+           completed
+        {% endif %}">
+
+        <div class="tracking-icon">
+            📦
+        </div>
+
+        <div class="tracking-text">
+            <strong>Order Placed</strong>
+            <small>Your order has been placed successfully.</small>
+        </div>
+
+    </div>
+
+
+    <!-- PROCESSING -->
+    <div class="tracking-step
+        {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+            completed
+        {% endif %}">
+
+        <div class="tracking-icon">
+            ⚙️
+        </div>
+
+        <div class="tracking-text">
+            <strong>Processing</strong>
+            <small>Your order is being prepared.</small>
+        </div>
+
+    </div>
+
+
+    <!-- SHIPPED -->
+    <div class="tracking-step
+        {% if order.status == 'shipped' or order.status == 'delivered' %}
+            completed
+        {% endif %}">
+
+        <div class="tracking-icon">
+            🚚
+        </div>
+
+        <div class="tracking-text">
+            <strong>Shipped</strong>
+            <small>Your order is on the way.</small>
+        </div>
+
+    </div>
+
+
+    <!-- DELIVERED -->
+    <div class="tracking-step
+        {% if order.status == 'delivered' %}
+            completed
+        {% endif %}">
+
+        <div class="tracking-icon">
+            ✅
+        </div>
+
+        <div class="tracking-text">
+            <strong>Delivered</strong>
+            <small>Your order has been delivered.</small>
+        </div>
+
+    </div>
+
+</div>
+
+       
+
+
+               
+
+       
 
         <!-- PRODUCTS -->
 
@@ -160,6 +369,17 @@
             <strong>Pincode:</strong>
             {{ order.pincode }}
         </p>
+        {% if order.status == 'placed' or order.status == 'processing' %}
+
+    <a href="{% url 'cancel_order' order.id %}"
+       class="btn btn-outline-danger back-btn mt-3 ms-2"
+       onclick="return confirm('Are you sure you want to cancel this order?');">
+
+        ❌ Cancel Order
+
+    </a>
+
+{% endif %}
 
 
         <a href="{% url 'my_orders' %}"
