@@ -13,7 +13,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'customer_name',
-        'email',
+        'phone',
         'total_amount',
         'status',
         'created_at',
@@ -26,7 +26,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     search_fields = (
         'customer_name',
-        'email',
+        'phone',
     )
 
 # Register your models here.

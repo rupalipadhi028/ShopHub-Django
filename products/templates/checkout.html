@@ -80,97 +80,141 @@
                 <h2 class="checkout-title">
                     🛍️ Checkout
                 </h2>
+<form method="POST">
 
-                <form method="POST">
+    {% csrf_token %}
 
-                    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">
+            Full Name
+        </label>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Full Name
-                        </label>
+        <input
+            type="text"
+            name="customer_name"
+            class="form-control"
+            placeholder="Enter your full name"
+            required>
+    </div>
 
-                        <input
-                            type="text"
-                            name="customer_name"
-                            class="form-control"
-                            placeholder="Enter your full name"
-                            required>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Email
-                        </label>
+    <div class="mb-3">
+        <label class="form-label fw-bold">
+            📱 Phone Number
+        </label>
 
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            placeholder="Enter your email"
-                            required>
-                    </div>
+        <input
+            type="tel"
+            name="phone"
+            class="form-control"
+            placeholder="Enter your phone number"
+            maxlength="15"
+            required>
+    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Address
-                        </label>
 
-                        <textarea
-                            name="address"
-                            class="form-control"
-                            rows="3"
-                            placeholder="Enter your complete address"
-                            required></textarea>
-                    </div>
+    <div class="mb-3">
+        <label class="form-label">
+            Address
+        </label>
 
-                    <div class="row">
+        <textarea
+            name="address"
+            class="form-control"
+            rows="3"
+            placeholder="Enter your complete address"
+            required></textarea>
+    </div>
 
-                        <div class="col-md-6 mb-3">
 
-                            <label class="form-label">
-                                City
-                            </label>
+    <div class="row">
 
-                            <input
-                                type="text"
-                                name="city"
-                                class="form-control"
-                                placeholder="Enter city"
-                                required>
+        <div class="col-md-6 mb-3">
 
-                        </div>
+            <label class="form-label">
+                City
+            </label>
 
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                Pincode
-                            </label>
-
-                            <input
-                                type="text"
-                                name="pincode"
-                                class="form-control"
-                                placeholder="Enter pincode"
-                                required>
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary place-order-btn">
-
-                        🛒 Place Order
-
-                    </button>
-
-                </form>
-
-            </div>
+            <input
+                type="text"
+                name="city"
+                class="form-control"
+                placeholder="Enter city"
+                required>
 
         </div>
+
+
+        <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+                Pincode
+            </label>
+
+            <input
+                type="text"
+                name="pincode"
+                class="form-control"
+                placeholder="Enter pincode"
+                required>
+
+        </div>
+
+    </div>
+
+
+    <!-- PAYMENT METHOD -->
+    <div class="mb-4">
+
+        <label class="form-label fw-bold">
+            💳 Payment Method
+        </label>
+
+        <div class="form-check">
+
+            <input
+                class="form-check-input"
+                type="radio"
+                name="payment_method"
+                value="cod"
+                checked>
+
+            <label class="form-check-label">
+                💵 Cash on Delivery
+            </label>
+
+        </div>
+
+
+        <div class="form-check mt-2">
+
+            <input
+                class="form-check-input"
+                type="radio"
+                name="payment_method"
+                value="online">
+
+            <label class="form-check-label">
+                💳 Online Payment
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- PLACE ORDER -->
+    <button
+        type="submit"
+        class="btn btn-primary place-order-btn">
+
+        🛒 Place Order
+
+    </button>
+
+</form>
+                
+       
 
 
         <!-- ORDER SUMMARY -->

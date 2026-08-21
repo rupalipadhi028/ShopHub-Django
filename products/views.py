@@ -38,41 +38,31 @@ def add_to_cart(request, product_id):
 
     product = get_object_or_404(Product, id=product_id)
 
-    # Check whether product is available
-    if product.stock <= 0:
-        messages.error(
-            request,
-            f'{product.name} is currently out of stock.'
-        )
-        return redirect('product_detail', product_id=product.id)
-
     cart = request.session.get('cart', {})
 
     product_id = str(product_id)
 
-    # Current quantity in cart
     current_quantity = cart.get(product_id, 0)
 
-    # Don't allow quantity greater than stock
-    if current_quantity >= product.stock:
-        messages.warning(
+    if current_quantity < product.stock:
+
+        cart[product_id] = current_quantity + 1
+
+        request.session['cart'] = cart
+
+        messages.success(
             request,
-            f'Only {product.stock} units of {product.name} are available.'
+            f'{product.name} added to cart.'
         )
-        return redirect('cart')
 
-    cart[product_id] = current_quantity + 1
+    else:
 
-    request.session['cart'] = cart
-
-    messages.success(
-        request,
-        f'{product.name} added to your cart.'
-    )
+        messages.error(
+            request,
+            f'Sorry, only {product.stock} item(s) available.'
+        )
 
     return redirect('cart')
-
-
 # Cart page
 def cart(request):
     cart = request.session.get('cart', {})
@@ -126,8 +116,7 @@ def checkout(request):
         total += subtotal
 
     if request.method == 'POST':
-
-        # Check stock before creating order
+     # Final stock check before creating the order
         for item in cart_items:
 
             product = item['product']
@@ -137,26 +126,31 @@ def checkout(request):
 
                 messages.error(
                     request,
-                    f'Only {product.stock} units of {product.name} are available.'
+                    f'Sorry, only {product.stock} item(s) of {product.name} are available.'
                 )
 
                 return redirect('cart')
 
+        # Check stock before creating order
+        
+
         customer_name = request.POST.get('customer_name')
-        email = request.POST.get('email')
+        phone = request.POST.get('phone')
         address = request.POST.get('address')
         city = request.POST.get('city')
         pincode = request.POST.get('pincode')
+        payment_method = request.POST.get('payment_method')
 
         # Create order
         order = Order.objects.create(
             user=request.user if request.user.is_authenticated else None,
             customer_name=customer_name,
-            email=email,
+            phone=phone,
             address=address,
             city=city,
             pincode=pincode,
-            total_amount=total
+            total_amount=total,
+            payment_method=payment_method
         )
 
         # Create order items and reduce stock
@@ -208,29 +202,31 @@ def remove_from_cart(request, product_id):
 # Increase quantity
 def increase_quantity(request, product_id):
 
+    product = get_object_or_404(
+        Product,
+        id=product_id
+    )
+
     cart = request.session.get('cart', {})
 
     product_id = str(product_id)
 
-    product = get_object_or_404(Product, id=product_id)
-
     if product_id in cart:
 
-        current_quantity = cart[product_id]
+        if cart[product_id] < product.stock:
 
-        if current_quantity < product.stock:
             cart[product_id] += 1
 
         else:
-            messages.warning(
+
+            messages.error(
                 request,
-                f'Only {product.stock} units of {product.name} are available.'
+                f'Sorry, only {product.stock} item(s) available.'
             )
 
     request.session['cart'] = cart
 
     return redirect('cart')
-
 
 # Decrease quantity
 def decrease_quantity(request, product_id):
@@ -420,9 +416,15 @@ def cancel_order(request, order_id):
 
     if order.status in ['placed', 'processing']:
 
+        for item in order.items.all():
+
+            product = item.product
+
+            product.stock += item.quantity
+            product.save()
+
         order.status = 'cancelled'
         order.save()
 
     return redirect('order_detail', order_id=order.id)
-
 # Create your views here.

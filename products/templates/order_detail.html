@@ -143,13 +143,15 @@
 }
     </style>
 
-</head>
+ </head>
 
 <body>
 
 <div class="container order-container">
 
     <div class="order-card">
+
+        <!-- ORDER HEADER -->
 
         <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -165,127 +167,126 @@
 
             </div>
 
-            {% if order.status == 'placed' %}
+            <!-- STATUS -->
 
-    <span class="badge bg-warning text-dark fs-6">
-        🟡 Order Placed
-    </span>
+            <div>
 
-{% elif order.status == 'processing' %}
+                {% if order.status == 'placed' %}
 
-    <span class="badge bg-primary fs-6">
-        🔵 Processing
-    </span>
+                    <span class="badge bg-warning text-dark fs-6">
+                        🟡 Order Placed
+                    </span>
 
-{% elif order.status == 'shipped' %}
+                {% elif order.status == 'processing' %}
 
-    <span class="badge bg-info text-dark fs-6">
-        🚚 Shipped
-    </span>
+                    <span class="badge bg-primary fs-6">
+                        🔵 Processing
+                    </span>
 
-{% elif order.status == 'delivered' %}
+                {% elif order.status == 'shipped' %}
 
-    <span class="badge bg-success fs-6">
-        ✅ Delivered
-    </span>
+                    <span class="badge bg-info text-dark fs-6">
+                        🚚 Shipped
+                    </span>
 
-{% elif order.status == 'cancelled' %}
+                {% elif order.status == 'delivered' %}
 
-    <span class="badge bg-danger fs-6">
-        ❌ Cancelled
-    </span>
+                    <span class="badge bg-success fs-6">
+                        ✅ Delivered
+                    </span>
 
-{% endif %}
+                {% elif order.status == 'cancelled' %}
+
+                    <span class="badge bg-danger fs-6">
+                        ❌ Cancelled
+                    </span>
+
+                {% endif %}
+
+            </div>
+
         </div>
 
         <hr>
-    <!-- ORDER TRACKING -->
 
-<h4 class="fw-bold mb-4">
-    📍 Order Tracking
-</h4>
+        <!-- ORDER TRACKING -->
 
-<div class="tracking">
+        <h4 class="fw-bold mb-4">
+            📍 Order Tracking
+        </h4>
 
-    <!-- PLACED -->
-    <div class="tracking-step
-        {% if order.status == 'placed' or order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
-           completed
-        {% endif %}">
+        <div class="tracking">
 
-        <div class="tracking-icon">
-            📦
+            <div class="tracking-step
+                {% if order.status == 'placed' or order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+                active
+                {% endif %}">
+
+                <div class="tracking-icon">
+                    📦
+                </div>
+
+                <div class="tracking-text">
+                    <strong>Order Placed</strong>
+                    <small>Order confirmed</small>
+                </div>
+
+            </div>
+
+
+            <div class="tracking-step
+                {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+                active
+                {% endif %}">
+
+                <div class="tracking-icon">
+                    ⚙️
+                </div>
+
+                <div class="tracking-text">
+                    <strong>Processing</strong>
+                    <small>Preparing your order</small>
+                </div>
+
+            </div>
+
+
+            <div class="tracking-step
+                {% if order.status == 'shipped' or order.status == 'delivered' %}
+                active
+                {% endif %}">
+
+                <div class="tracking-icon">
+                    🚚
+                </div>
+
+                <div class="tracking-text">
+                    <strong>Shipped</strong>
+                    <small>On the way</small>
+                </div>
+
+            </div>
+
+
+            <div class="tracking-step
+                {% if order.status == 'delivered' %}
+                active
+                {% endif %}">
+
+                <div class="tracking-icon">
+                    ✅
+                </div>
+
+                <div class="tracking-text">
+                    <strong>Delivered</strong>
+                    <small>Order delivered</small>
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="tracking-text">
-            <strong>Order Placed</strong>
-            <small>Your order has been placed successfully.</small>
-        </div>
-
-    </div>
-
-
-    <!-- PROCESSING -->
-    <div class="tracking-step
-        {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
-            completed
-        {% endif %}">
-
-        <div class="tracking-icon">
-            ⚙️
-        </div>
-
-        <div class="tracking-text">
-            <strong>Processing</strong>
-            <small>Your order is being prepared.</small>
-        </div>
-
-    </div>
-
-
-    <!-- SHIPPED -->
-    <div class="tracking-step
-        {% if order.status == 'shipped' or order.status == 'delivered' %}
-            completed
-        {% endif %}">
-
-        <div class="tracking-icon">
-            🚚
-        </div>
-
-        <div class="tracking-text">
-            <strong>Shipped</strong>
-            <small>Your order is on the way.</small>
-        </div>
-
-    </div>
-
-
-    <!-- DELIVERED -->
-    <div class="tracking-step
-        {% if order.status == 'delivered' %}
-            completed
-        {% endif %}">
-
-        <div class="tracking-icon">
-            ✅
-        </div>
-
-        <div class="tracking-text">
-            <strong>Delivered</strong>
-            <small>Your order has been delivered.</small>
-        </div>
-
-    </div>
-
-</div>
-
-       
-
-
-               
-
-       
+        <hr>
 
         <!-- PRODUCTS -->
 
@@ -298,37 +299,26 @@
         <div class="row product-row align-items-center">
 
             <div class="col-6">
-
-                <strong>
-                    {{ item.product.name }}
-                </strong>
-
+                <strong>{{ item.product.name }}</strong>
             </div>
 
             <div class="col-3 text-center">
-
                 × {{ item.quantity }}
-
             </div>
 
             <div class="col-3 text-end">
-
                 ₹{{ item.price }}
-
             </div>
 
         </div>
 
         {% endfor %}
 
-
         <!-- TOTAL -->
 
         <div class="d-flex justify-content-between mt-4 total">
 
-            <span>
-                Total
-            </span>
+            <span>Total</span>
 
             <span class="text-primary">
                 ₹{{ order.total_amount }}
@@ -338,49 +328,83 @@
 
         <hr class="my-4">
 
-
         <!-- DELIVERY -->
 
         <h4 class="fw-bold mb-3">
             🚚 Delivery Details
         </h4>
 
+        <p><strong>Name:</strong> {{ order.customer_name }}</p>
+
+        <p><strong>Phone:</strong> {{ order.phone }}</p>
+
+        <p><strong>Address:</strong> {{ order.address }}</p>
+
+        <p><strong>City:</strong> {{ order.city }}</p>
+
+        <p><strong>Pincode:</strong> {{ order.pincode }}</p>
+
+        <hr class="my-4">
+
+        <!-- PAYMENT -->
+
+        <h4 class="fw-bold mb-3">
+            💳 Payment Details
+        </h4>
+
         <p>
-            <strong>Name:</strong>
-            {{ order.customer_name }}
+
+            <strong>Payment Method:</strong>
+
+            {% if order.payment_method == 'cod' %}
+                💵 Cash on Delivery
+            {% else %}
+                💳 Online Payment
+            {% endif %}
+
         </p>
 
         <p>
-            <strong>Email:</strong>
-            {{ order.email }}
+
+            <strong>Payment Status:</strong>
+
+            {% if order.payment_status == 'paid' %}
+
+                <span class="badge bg-success">
+                    ✅ Paid
+                </span>
+
+            {% elif order.payment_status == 'failed' %}
+
+                <span class="badge bg-danger">
+                    ❌ Failed
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-warning text-dark">
+                    🟡 Pending
+                </span>
+
+            {% endif %}
+
         </p>
 
-        <p>
-            <strong>Address:</strong>
-            {{ order.address }}
-        </p>
+        <!-- CANCEL -->
 
-        <p>
-            <strong>City:</strong>
-            {{ order.city }}
-        </p>
-
-        <p>
-            <strong>Pincode:</strong>
-            {{ order.pincode }}
-        </p>
         {% if order.status == 'placed' or order.status == 'processing' %}
 
-    <a href="{% url 'cancel_order' order.id %}"
-       class="btn btn-outline-danger back-btn mt-3 ms-2"
-       onclick="return confirm('Are you sure you want to cancel this order?');">
+            <a href="{% url 'cancel_order' order.id %}"
+               class="btn btn-outline-danger mt-3"
+               onclick="return confirm('Are you sure you want to cancel this order?');">
 
-        ❌ Cancel Order
+                ❌ Cancel Order
 
-    </a>
+            </a>
 
-{% endif %}
+        {% endif %}
 
+        <br>
 
         <a href="{% url 'my_orders' %}"
            class="btn btn-outline-primary back-btn mt-3">
@@ -393,5 +417,8 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>

@@ -50,7 +50,7 @@ class Order(models.Model):
     )
 
     customer_name = models.CharField(max_length=100)
-    email = models.EmailField()
+    phone = models.CharField(max_length=15, default='')
     address = models.TextField()
     city = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
@@ -70,6 +70,24 @@ class Order(models.Model):
             ('cancelled', 'Cancelled'),
         ],
         default='placed'
+    )
+    payment_method = models.CharField(
+    max_length=20,
+    choices=[
+        ('cod', 'Cash on Delivery'),
+        ('online', 'Online Payment'),
+    ],
+    default='cod'
+)
+
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'Pending'),
+            ('paid', 'Paid'),
+            ('failed', 'Failed'),
+        ],
+        default='pending'
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
