@@ -104,10 +104,11 @@
                         {{ product.stock }}
                     </p>
 
-                    <a href="{% url 'add_to_cart' product.id %}"
-                       class="btn btn-primary btn-lg">
-                        🛒 Add to Cart
-                    </a>
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}<button type="submit" class="btn btn-primary btn-lg" {% if product.stock == 0 %}disabled{% endif %}>
+                            {% if product.stock == 0 %}Out of stock{% else %}🛒 Add to Cart{% endif %}
+                        </button>
+                    </form>
 
                 </div>
 

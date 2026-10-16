@@ -1,0 +1,9 @@
+# Django 5.2 is the LTS release compatible with the released SimpleJWT line.
+Django>=5.2.18,<5.3
+djangorestframework>=3.16,<3.17
+djangorestframework-simplejwt[crypto]>=5.5,<5.6
+django-filter>=25,<26
+drf-spectacular>=0.28,<1
+python-dotenv>=1,<2
+mysqlclient>=2.2,<3
+Pillow>=11,<13

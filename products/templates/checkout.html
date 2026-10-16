@@ -80,6 +80,11 @@
                 <h2 class="checkout-title">
                     🛍️ Checkout
                 </h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags|default:'info' }}{% endif %}" role="alert">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
 <form method="POST">
 
     {% csrf_token %}
@@ -95,6 +100,11 @@
             class="form-control"
             placeholder="Enter your full name"
             required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email (optional)</label>
+        <input type="email" name="email" class="form-control" placeholder="For order updates">
     </div>
 
 
@@ -186,19 +196,7 @@
         </div>
 
 
-        <div class="form-check mt-2">
-
-            <input
-                class="form-check-input"
-                type="radio"
-                name="payment_method"
-                value="online">
-
-            <label class="form-check-label">
-                💳 Online Payment
-            </label>
-
-        </div>
+        <small class="text-muted">Online payment will be available after secure payment processing is configured.</small>
 
     </div>
 

@@ -40,22 +40,22 @@
             <p>Price: ₹{{ item.product.price }}</p>
 
 <div>
-    <a href="{% url 'decrease_quantity' item.product.id %}">
-        ➖
-    </a>
+    <form method="post" action="{% url 'decrease_quantity' item.product.id %}" style="display:inline">
+        {% csrf_token %}<button type="submit" aria-label="Decrease quantity">➖</button>
+    </form>
 
     <strong>{{ item.quantity }}</strong>
 
-    <a href="{% url 'increase_quantity' item.product.id %}">
-        ➕
-    </a>
+    <form method="post" action="{% url 'increase_quantity' item.product.id %}" style="display:inline">
+        {% csrf_token %}<button type="submit" aria-label="Increase quantity">➕</button>
+    </form>
 </div>
 
 <p>Subtotal: ₹{{ item.subtotal }}</p>
 
-<a href="{% url 'remove_from_cart' item.product.id %}">
-    🗑️ Remove
-</a>
+<form method="post" action="{% url 'remove_from_cart' item.product.id %}">
+    {% csrf_token %}<button type="submit">🗑️ Remove</button>
+</form>
 
             
             <p>Subtotal: ₹{{ item.subtotal }}</p>
